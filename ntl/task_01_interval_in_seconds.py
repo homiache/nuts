@@ -29,7 +29,7 @@
 # * In the task description and acceptance tests, there is no exact information on how we round the seconds
 #   in case they turn out to be fractional. In this case, I am free to decide what to expect.
 #   My choice is to expect a maximum integer that is still less than the input value. Integer part of a fraction.
-#   Moreover int(str) do that.
+#   Moreover int(float(str)) do that.
 
 
 import re
@@ -64,8 +64,7 @@ def interval_in_seconds(time_delta_specifier):
 
     # Process seconds without time unit.
     if re.match("^[0-9]+$|^[0-9]+[.][0-9]+$", time_delta_specifier):
-        return int(time_delta_specifier)
+        return int(float(time_delta_specifier))
 
     # If no other choice is present then return an Exception about invalid value.
     raise Exception("Invalid input value.")
-
