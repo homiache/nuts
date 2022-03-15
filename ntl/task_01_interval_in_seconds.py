@@ -17,24 +17,19 @@
 # | 1m30s                | Exception raised |
 # | 1y                   | Exception raised |
 # | <empty string>       | Exception raised |
-
-
-# Solution plan:
-# a) validate input values;
-# b) process simple cases;
-# c) process patterns for every time unit;
-# d) create tests.
-#
-# Templates For seconds:
-# - "<delta value>s" where delta value could be positive integer or zero
-# - "<delta value>" where delta value could be positive integer or zero
-# - "s"
-#
-# TODO Clarify requirements to define patterns
 #
 # Notes
-# 1. It could be a problems with the int max value in theory but they say that "In Python, value of an integer
-# is not restricted by the number of bits and can expand to the limit of the available memory".
+#
+# * It could be a problems with the int max value in theory but they say that "In Python, value of an integer
+#   is not restricted by the number of bits and can expand to the limit of the available memory".
+#
+# * Acceptance tests use numbers in a decimal from. So lets think that no other format (e. g. hexadecimal with prefix)
+#   is allowed.
+#
+# * In the task description and acceptance tests, there is no exact information on how we round the seconds
+#   in case they turn out to be fractional. In this case, I am free to decide what to expect.
+#   My choice is to expect a maximum integer that is still less than the input value. Integer part of a fraction.
+#   Moreover int(str) do that.
 
 
 import re
@@ -53,6 +48,10 @@ def interval_in_seconds(time_delta_specifier):
     if len(time_delta_specifier) == 0:
         raise Exception("The input value must not be an empty string.")
 
+    # Time units can be in uppercase or lowercase.
+    # Set input to a lowercase for easier processing
+    time_delta_specifier = time_delta_specifier.lower()
+
     # Check simple cases with time unit only.
     if time_delta_specifier == 's':
         return 1  # Default value is 1.
@@ -63,21 +62,10 @@ def interval_in_seconds(time_delta_specifier):
     elif time_delta_specifier == "d":
         return 86400  # Seconds in 1 day.
 
-    # Possible pattern for delta value
-    pattern = '^[0-9]+$|^[0-9]+[.][0-9]+$'
-    if re.match(pattern, time_delta_specifier):
-        return True
-    else:
-        return False
+    # Process seconds without time unit.
+    if re.match("^[0-9]+$|^[0-9]+[.][0-9]+$", time_delta_specifier):
+        return int(time_delta_specifier)
 
+    # If no other choice is present then return an Exception about invalid value.
+    raise Exception("Invalid input value.")
 
-# Just for rough visual pattern testing
-for each in [
-    "0",
-    "2.54",
-    ".65",
-    "18.",
-    "42",
-    "2.2.55"
-]:
-    print("{} is {}".format(each, interval_in_seconds(each)))
