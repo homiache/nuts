@@ -81,20 +81,20 @@ class TestIntervalInSecondsForMinutes(unittest.TestCase):
 #   H
 class TestIntervalInSecondsForHours(unittest.TestCase):
 
-    def test_days_with_time_unit_in_uppercase(self):
-        self.assertEqual(345600, interval_in_seconds("4D"), "345600 Seconds in 4 days.")
+    def test_hours_with_time_unit_in_uppercase(self):
+        self.assertEqual(93600, interval_in_seconds("26H"), "93600 Seconds in 26 hours.")
 
-    def test_fractional_days_with_delta_value_more_then_1(self):
-        self.assertEqual(86486, interval_in_seconds("1.001d"), "Minutes could be fractional.")
+    def test_fractional_hours_with_delta_value_more_then_1(self):
+        self.assertEqual(3819, interval_in_seconds("1.061h"), "Minutes could be fractional.")
 
-    def test_fractional_days_with_delta_value_less_then_1(self):
-        self.assertEqual(1123, interval_in_seconds("0.013d"), "Returns the closest int value less then float result.")
+    def test_fractional_hours_with_delta_value_less_then_1(self):
+        self.assertEqual(3564, interval_in_seconds("0.99H"), "Returns the closest int value less then float result.")
 
-    def test_days_time_unit_only(self):
-        self.assertEqual(86400, interval_in_seconds("D"), "3600 seconds should be returned for one hour.")
+    def test_hour_time_unit_only(self):
+        self.assertEqual(3600, interval_in_seconds("h"), "3600 seconds should be returned for one hour.")
 
     def test_0_hours(self):
-        self.assertEqual(0, interval_in_seconds("0D"), "0 seconds in 0 hours.")
+        self.assertEqual(0, interval_in_seconds("0h"), "0 seconds in 0 hours.")
 
 
 # Positive cases for days.
@@ -110,20 +110,20 @@ class TestIntervalInSecondsForHours(unittest.TestCase):
 #   D
 class TestIntervalInSecondsForDays(unittest.TestCase):
 
-    def test_hours_with_time_unit_in_uppercase(self):
-        self.assertEqual(93600, interval_in_seconds("26H"), "93600 Seconds in 26 hours.")
+    def test_days_with_time_unit_in_uppercase(self):
+        self.assertEqual(345600, interval_in_seconds("4D"), "345600 Seconds in 4 days.")
 
-    def test_fractional_hours_with_delta_value_more_then_1(self):
-        self.assertEqual(3819, interval_in_seconds("1.061h"), "Minutes could be fractional.")
+    def test_fractional_days_with_delta_value_more_then_1(self):
+        self.assertEqual(86486, interval_in_seconds("1.001d"), "Minutes could be fractional.")
 
-    def test_fractional_hours_with_delta_value_less_then_1(self):
-        self.assertEqual(3564, interval_in_seconds("0.99H"), "Returns the closest int value less then float result.")
+    def test_fractional_days_with_delta_value_less_then_1(self):
+        self.assertEqual(1123, interval_in_seconds("0.013d"), "Returns the closest int value less then float result.")
 
-    def test_hour_time_unit_only(self):
-        self.assertEqual(3600, interval_in_seconds("h"), "3600 seconds should be returned for one hour.")
+    def test_days_time_unit_only(self):
+        self.assertEqual(86400, interval_in_seconds("D"), "3600 seconds should be returned for one hour.")
 
     def test_0_hours(self):
-        self.assertEqual(0, interval_in_seconds("0h"), "0 seconds in 0 hours.")
+        self.assertEqual(0, interval_in_seconds("0D"), "0 seconds in 0 hours.")
 
 
 class TestIntervalInSecondsNegative(unittest.TestCase):
