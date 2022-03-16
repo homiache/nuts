@@ -125,6 +125,25 @@ class TestIntervalInSecondsForDays(unittest.TestCase):
     def test_0_hours(self):
         self.assertEqual(0, interval_in_seconds("0D"), "0 seconds in 0 hours.")
 
+    # In Python 3 the plain int type is unbound.
+    # Max int for Python 2 is 9223372036854775807
+    # We have 86400 seconds in a day.
+    # 9223372036854775807 seconds is about 106751991167300.64 days
+    # Two tests for close to boundary cases:
+    def test_less_than_max_int_for_python_2(self):
+        self.assertAlmostEqual(
+            first=9223372036854775209,
+            second=interval_in_seconds("106751991167300.639d"),
+            delta=1000
+        )
+
+    def test_more_than_max_int_for_python_2(self):
+        self.assertAlmostEqual(
+            first=9223372036854806400,
+            second=interval_in_seconds("106751991167301d"),
+            delta=1000
+        )
+
 
 class TestIntervalInSecondsNegative(unittest.TestCase):
 
