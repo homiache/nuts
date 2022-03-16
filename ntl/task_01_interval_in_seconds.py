@@ -37,6 +37,13 @@ import re
 
 def interval_in_seconds(time_delta_specifier):
 
+    time_units = {
+        "s": 1,  # Seconds in 1 second.
+        "m": 60,  # Seconds in 1 minute.
+        "h": 3600,  # Seconds in 1 hour.
+        "d": 86400,  # Seconds in 1 day.
+    }
+
     # Check type of an input data.
     if time_delta_specifier.__class__ is not str:
         raise Exception("The input value must be a string.")
@@ -52,19 +59,17 @@ def interval_in_seconds(time_delta_specifier):
     # Set input to a lowercase for easier processing
     time_delta_specifier = time_delta_specifier.lower()
 
-    # Check simple cases with time unit only.
-    if time_delta_specifier == 's':
-        return 1  # Default value is 1.
-    elif time_delta_specifier == 'm':
-        return 60  # Seconds in 1 minute.
-    elif time_delta_specifier == 'h':
-        return 3600  # Seconds in 1 hour.
-    elif time_delta_specifier == "d":
-        return 86400  # Seconds in 1 day.
+    # Check simple cases with time unit only
+    if time_delta_specifier in time_units.keys():
+        return time_units[time_delta_specifier]
 
     # Process seconds without time unit.
     if re.match("^[0-9]+$|^[0-9]+[.][0-9]+$", time_delta_specifier):
         return int(float(time_delta_specifier))
+
+    # If unit type is supported and delta value is valid:
+    if time_delta_specifier[-1] in time_units.keys() and re.match("^[0-9]+$|^[0-9]+[.][0-9]+$", time_delta_specifier[:-1]):
+        return int(float(time_delta_specifier[:-1]) * time_units[time_delta_specifier[-1]])
 
     # If no other choice is present then return an Exception about invalid value.
     raise Exception("Invalid input value.")
