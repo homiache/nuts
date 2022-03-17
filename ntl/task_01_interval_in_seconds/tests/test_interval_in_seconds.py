@@ -1,7 +1,7 @@
 # coding=utf-8
 
 import unittest
-from ntl.task_01_interval_in_seconds import interval_in_seconds
+from ntl.task_01_interval_in_seconds.interval_in_seconds import interval_in_seconds
 
 
 # Positive cases for seconds.

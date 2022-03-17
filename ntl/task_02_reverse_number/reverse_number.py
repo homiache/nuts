@@ -19,39 +19,8 @@
 # Extra task. Propose how to generalize this task to floating point numbers. Think not only about how to reverse
 # a number but also what user expects from this routine (e.g. should 12.345 result in 21.543 or 543.21
 # or any other variant).
-#
-# My current choice is
-#   function(number) == int(str(number)[::-1]) for int input
-#   function(number) == float(str(number)[::-1]) for float input
 
 
-def increase_float_to_integer(number):
-
-    exponentiation = 0
-
-    # If number has a fractional part then
-    if number % 1 > 0:
-        # Until multiplication by 10 leaves the number without a fractional part do:
-        while (number * (10**exponentiation)) % 1 > 0:
-            exponentiation = exponentiation + 1
-
-    return int(number * (10**exponentiation)), exponentiation
-
-
-def return_point(number, exponentiation):
-    if number < 10 ** exponentiation:
-        while number < 10 ** exponentiation:
-            number = number * 10
-        return number
-    elif number > 10 ** exponentiation:
-        while number > 10 ** exponentiation:
-            number = number / 10
-        return number
-    else:
-        return 10**exponentiation
-
-
-# code here
 def natural_number_reverse(number):
     """
     Function accepts a natural number and returns another natural number that represents input’s reverse.
@@ -79,24 +48,3 @@ def natural_number_reverse(number):
         current_number = int(current_number / 10)
 
     return result
-
-
-def reverse(number):
-    if number.__class__ is int:
-        return natural_number_reverse(number)
-    elif number.__class__ is float:
-        a, b = increase_float_to_integer(number)
-        print(a)
-        return return_point(reverse(a), b)
-    else:
-        raise Exception("Input value is not an integer.")
-
-
-if __name__ == "__main__":
-    for each in [
-        10005,
-        100.05,
-        0.0054,
-        1.005 # shows (10049999999999998, 16) that is not what we want
-    ]:
-        print(increase_float_to_integer(each))
