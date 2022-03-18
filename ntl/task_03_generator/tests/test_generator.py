@@ -15,7 +15,7 @@ class TestMerge(unittest.TestCase):
         d = range(6)             # Generator.
         e = {1: 1, 2: "bebebe"}  # Please note that dict.__iter__() returns keys, not values.
         f = ""                   # Empty string.
-        g = Merge([28, 29])      # Merge object itself.
+        g = Merge([28, 29])      # Merge object itself. Must correctly stops.
 
         # Create main generator to test.
         merge = Merge(g, f, b, c, d, e, a)
@@ -56,8 +56,8 @@ class TestMergeNegative(unittest.TestCase):
         with self.assertRaises(Exception):
             Merge([[2]])
 
-    def iterate_more(self):
-
+    @staticmethod
+    def iterate_more():
             generator = Merge([2])
             next(generator)  # 2 should be returned
             next(generator)  # StopIteration exception should be returned.
