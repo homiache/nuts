@@ -16,9 +16,18 @@
 #
 # There exists a standard python solution based on heapq.merge, but we would like that you write your solution
 # from scratch without using heapq module.
+#
+# Note that Merge class expects mostly int class values. E. g. all float numbers or chars are cast to int.
 
 
 class Merge(object):
+    """
+    Merge is a class for generator.
+    """
+
+    # These dynamic attributes allowed only.
+    __slots__ = ("__iterators", "__slice")
+
     def __init__(self, *args):
         """
         The function:
@@ -28,23 +37,86 @@ class Merge(object):
           - create a slice from iterables.
         :param args: any number of iterables.
         """
-        self.dict_of_iterators = self.__dict_of_iterators(args)
+
+        # Create dict of iterators
+        self.__iterators = self.__dict_of_iterators(args)
+
+        # Create initial slice without any data.
+        self.__slice = {i: None for i in range(len(args))}
+
+        # Fill the slice
+        for each in self.__slice.keys():
+            self.__update_slice(each)
+
+        # Remove inactive slice elements
+        self.__clean_slice()
 
     def __iter__(self):
-        pass
+        """
+        :return: Merge, the object itself.
+        """
+        return self
 
     def __next__(self):
-        pass
+        """
+        Algorithm is:
+         - Check slice length.
+         - If length is 0 than return StopIteration exception.
+         - Else return max value of slice, update slice and clean slice.
+        :return: int, next iterator value.
+        """
+        if len(self.__slice) == 0:
+            raise StopIteration
+        else:
+            # Get key of the element with the min value from the slice.
+            key = self.__key_of_min_dict_element(self.__slice)
+
+            # Result is a min value from the slice.
+            result = self.__slice[key]
+
+            # Get next value for the key from slice.
+            self.__update_slice(key)
+
+            # Clean slice from the not working iterators.
+            self.__clean_slice()
+
+            return result
+
+    def __update_slice(self, key):
+        """
+        Update element of slice for the given key with a next value of a related iterator.
+        :param key: int.
+        :return: Nothing.
+        """
+
+        # Check input value.
+        if key not in self.__slice.keys():
+            raise Exception("No {} key in object.__slice attribute.".format(key))
+
+        try:
+            self.__slice[key] = int(self.__iterators[key].__next__())
+        except StopIteration:
+            self.__slice[key] = None
+
+        # It could be some scenario in case if "next" value is not an int,
+        # but we just raise the ValueError exception.
+        # Possible scenario: get next value from iterator until integer or StopIteration is returned.
+        except ValueError as ex:
+            raise ex
+
+    def __clean_slice(self):
+        # Remove all elements wit None value.
+        self.__slice = {i: self.__slice[i] for i in self.__slice.keys() if self.__slice[i] is not None}
 
     @staticmethod
-    def __dict_of_iterators(*args):
+    def __dict_of_iterators(iterators):
         """
-        The function gets iterables and return a dict like {1: iteraror_1, 2: iterator_2, ...}
-        :param args: iterables
+        The function gets tuple of iterables and return a dict like {1: iteraror_1, 2: iterator_2, ...}
+        :param iterators: iterables
         :return: dict, dict of iterators.
         """
         # Input shouldn't be empty.
-        if len(args) == 0:
+        if len(iterators) == 0:
             raise Exception("Should be at least one iterable in input.")
 
         # Is used as a key for the dict.
@@ -53,10 +125,23 @@ class Merge(object):
         # Dict with iterators.
         dict_of_iterators = {}
 
-        for each in args:
+        for each in iterators:
             try:
                 dict_of_iterators[i] = each.__iter__()
+                i = i + 1
             except TypeError:
                 raise Exception("{} is not iterable.".format(each))
 
         return dict_of_iterators
+
+    @staticmethod
+    def __key_of_min_dict_element(dictionary):
+        """
+        Returns a key for the min value in dict.
+        :param dictionary: dict.
+        :return: int, key from the input dict.
+        """
+        if dictionary.__class__ is dict:
+            return min(dictionary, key=dictionary.get)
+        else:
+            Exception("Input data should be a dictionary.")
